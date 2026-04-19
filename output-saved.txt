@@ -1,0 +1,99 @@
+
+🔴 #1 — CRITICAL  [INP: +847ms  ·  TBT: 1,890ms]
+   Component: ProductCard → src/components/ProductCard.tsx:14
+
+   Issue: getPriceCategory() runs a 10,000-iteration loop inside the render
+   function. With 50 cards on screen, every keystroke in SearchBar triggers
+   50 re-renders × 10,000 iterations = 500,000 synchronous operations on
+   the main thread. This is your INP killer.
+
+   Evidence: Lighthouse shows 5 long tasks totalling 2,340ms. The "Total
+   Blocking Time" of 1,890ms maps directly to main-thread saturation from
+   these render cycles. React DevTools Profiler would show all 50 cards
+   re-rendering on every search input event.
+
+   Fix: Move getPriceCategory outside the component (no need to recreate
+   the function), then wrap the call in useMemo with [product.price] as
+   dependency. Wrap the component with React.memo.
+   Impact: ~810ms INP reduction  →  Run: node fix.js productcard-memo
+
+────────────────────────────────────────────────────────────────
+
+🔴 #2 — CRITICAL  [LCP: 4.2s  ·  potential savings: 14,230 KiB]
+   Resource: /images/product-*.jpg (10 unique images, served 50 times)
+
+   Issue: Full-resolution 1200×1200px JPEGs are served to cards that are
+   max 280px wide on screen. The browser downloads 4.3× more pixels than
+   it renders. Average image is 487KB; at WebP 300px that becomes ~12KB —
+   a 40× reduction. No srcset, no lazy loading, no explicit dimensions.
+
+   Evidence: Lighthouse "Efficiently encode images" flags 14,230 KiB of
+   wasted image data. The LCP element is a product <img> tag. Network tab
+   on simulated 4G shows first image taking 2.8s to load.
+
+   Fix: Add srcset pointing to WebP variants, add loading="lazy", add
+   explicit width/height to prevent CLS. Run optimize-images.js to convert
+   JPEGs → WebP at 300px and 600px.
+   Impact: ~2.6s LCP reduction  ·  CLS 0.28 → ~0.02
+   →  Run: node fix.js images
+
+────────────────────────────────────────────────────────────────
+
+🟠 #3 — HIGH  [TTI: 7.5s  ·  bundle: 182 KiB wasted]
+   Bundle: recharts eagerly imported via AnalyticsDashboard
+   Entry point: src/components/ProductList.tsx:2
+
+   Issue: AnalyticsDashboard is imported at the top of ProductList.tsx and
+   loaded on every page visit — even when the "Show Analytics" toggle is
+   never clicked. The full recharts library (182KB gzipped) blocks Time to
+   Interactive on the initial page load.
+
+   Evidence: Bundle analysis shows recharts at 31% of total JS payload
+   in the main chunk. It's 523KB uncompressed. Lighthouse "Reduce unused
+   JavaScript" flags 183KB of dead code on the critical path.
+
+   Fix: Convert to React.lazy() + Suspense. The chunk will only load when
+   the user first clicks "Show Analytics".
+   Impact: ~1.3s TTI reduction  ·  main bundle −182KB
+   →  Run: node fix.js codesplit
+
+────────────────────────────────────────────────────────────────
+
+🟠 #4 — HIGH  [unstable handleSearch callback]
+   Component: ProductList → src/components/ProductList.tsx:14
+
+   Issue: The handleSearch function is declared inline without useCallback,
+   creating a new function reference on every ProductList render. Since
+   SearchBar receives it as a prop, every state change (including each
+   search keystroke) passes a "new" onSearch to SearchBar and triggers
+   its re-render unnecessarily.
+
+   Evidence: Compound problem with issue #1 — the re-render cascade starts
+   here. ProductList re-renders on keystroke → new handleSearch reference
+   → SearchBar sees prop change → child components re-render.
+
+   Fix: Wrap handleSearch in useCallback with empty dependency array.
+   Impact: Eliminates cascading re-renders (included in codesplit fix)
+   →  Run: node fix.js codesplit
+
+────────────────────────────────────────────────────────────────
+
+🟡 #5 — MEDIUM  [FCP: +290ms  ·  render-blocking resource]
+   Resource: Google Fonts stylesheet in <head>
+   Entry point: index.html:6
+
+   Issue: The Google Fonts <link> tag has no preconnect hint. The browser
+   must complete a DNS lookup + TCP handshake + TLS negotiation before the
+   font CSS can download. On cold loads this adds ~290ms to First
+   Contentful Paint. The page renders with a system font flash until Inter
+   loads.
+
+   Fix: Add <link rel="preconnect" href="https://fonts.googleapis.com">
+   and <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   before the fonts stylesheet link in index.html.
+   Impact: ~280ms FCP improvement
+
+────────────────────────────────────────────────────────────────
+
+Estimated score after all fixes:  23  →  84–89/100
+Time to apply fixes:  ~8 minutes

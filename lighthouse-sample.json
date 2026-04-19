@@ -1,0 +1,110 @@
+{
+  "lighthouseVersion": "11.4.0",
+  "requestedUrl": "http://localhost:3000",
+  "finalDisplayedUrl": "http://localhost:3000/",
+  "fetchTime": "2026-04-19T10:23:45.123Z",
+  "categories": {
+    "performance": {
+      "id": "performance",
+      "title": "Performance",
+      "score": 0.23
+    },
+    "accessibility": { "id": "accessibility", "title": "Accessibility", "score": 0.82 },
+    "best-practices": { "id": "best-practices", "title": "Best Practices", "score": 0.75 },
+    "seo": { "id": "seo", "title": "SEO", "score": 0.65 }
+  },
+  "audits": {
+    "first-contentful-paint": {
+      "id": "first-contentful-paint",
+      "title": "First Contentful Paint",
+      "score": 0.31,
+      "numericValue": 2847.5,
+      "displayValue": "2.8 s"
+    },
+    "largest-contentful-paint": {
+      "id": "largest-contentful-paint",
+      "title": "Largest Contentful Paint",
+      "score": 0.12,
+      "numericValue": 4234.6,
+      "displayValue": "4.2 s"
+    },
+    "total-blocking-time": {
+      "id": "total-blocking-time",
+      "title": "Total Blocking Time",
+      "score": 0.0,
+      "numericValue": 1890,
+      "displayValue": "1,890 ms"
+    },
+    "cumulative-layout-shift": {
+      "id": "cumulative-layout-shift",
+      "title": "Cumulative Layout Shift",
+      "score": 0.14,
+      "numericValue": 0.28,
+      "displayValue": "0.28"
+    },
+    "speed-index": {
+      "id": "speed-index",
+      "title": "Speed Index",
+      "score": 0.18,
+      "numericValue": 5234,
+      "displayValue": "5.2 s"
+    },
+    "interactive": {
+      "id": "interactive",
+      "title": "Time to Interactive",
+      "score": 0.08,
+      "numericValue": 7456,
+      "displayValue": "7.5 s"
+    },
+    "render-blocking-resources": {
+      "id": "render-blocking-resources",
+      "title": "Eliminate render-blocking resources",
+      "score": 0,
+      "displayValue": "Potential savings of 290 ms",
+      "details": {
+        "type": "table",
+        "items": [
+          { "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap", "wastedMs": 289 }
+        ]
+      }
+    },
+    "uses-optimized-images": {
+      "id": "uses-optimized-images",
+      "title": "Efficiently encode images",
+      "score": 0,
+      "displayValue": "Potential savings of 14,230 KiB",
+      "details": {
+        "type": "table",
+        "items": [
+          { "url": "http://localhost:3000/images/product-1.jpg", "totalBytes": 487234, "wastedBytes": 462872 },
+          { "url": "http://localhost:3000/images/product-2.jpg", "totalBytes": 512890, "wastedBytes": 487246 },
+          { "url": "http://localhost:3000/images/product-3.jpg", "totalBytes": 445123, "wastedBytes": 422867 }
+        ]
+      }
+    },
+    "unused-javascript": {
+      "id": "unused-javascript",
+      "title": "Reduce unused JavaScript",
+      "score": 0.1,
+      "displayValue": "Potential savings of 183 KiB",
+      "details": {
+        "type": "table",
+        "items": [
+          { "url": "http://localhost:3000/assets/index-BXf3g2I.js", "totalBytes": 583245, "wastedBytes": 187123, "wastedPercent": 32.1 }
+        ]
+      }
+    },
+    "uses-long-cache-ttl": {
+      "score": 0,
+      "displayValue": "22 resources found"
+    },
+    "uses-text-compression": {
+      "score": 0.2,
+      "displayValue": "Potential savings of 48 KiB"
+    },
+    "long-tasks": {
+      "score": 0,
+      "displayValue": "5 long tasks found (total: 2,340 ms)"
+    }
+  }
+}
