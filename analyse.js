@@ -9,6 +9,18 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+// Load .env.local if present (Node doesn't auto-load env files)
+const envFile = path.join(__dirname, '.env.local')
+if (existsSync(envFile)) {
+  for (const line of readFileSync(envFile, 'utf8').split('\n')) {
+    const [key, ...rest] = line.split('=')
+    if (key && rest.length && !process.env[key.trim()]) {
+      process.env[key.trim()] = rest.join('=').trim()
+    }
+  }
+}
+
 const useSaved = process.argv.includes('--saved')
 
 // ── Terminal helpers ─────────────────────────────────────────────────────────

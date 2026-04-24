@@ -1,18 +1,17 @@
-// PERF BUG: AnalyticsDashboard imported eagerly — recharts (182KB) in main bundle
-import { useState } from 'react'
-import  AnalyticsDashboard  from './AnalyticsDashboard'
+import React, { useState, lazy, Suspense, useCallback } from 'react'
 import { ProductCard } from './ProductCard'
 import { SearchBar } from './SearchBar'
 import { products } from '../data/products'
+
+const AnalyticsDashboard = lazy(() => import('./AnalyticsDashboard'))
 
 export function ProductList() {
   const [searchTerm, setSearchTerm] = useState('')
   const [showAnalytics, setShowAnalytics] = useState(false)
 
-  // PERF BUG: New function reference on every render — all 50 ProductCards see prop change
-  const handleSearch = (value: string) => {
+  const handleSearch = useCallback((value: string) => {
     setSearchTerm(value)
-  }
+  }, [])
 
   const filtered = products.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -29,8 +28,9 @@ export function ProductList() {
         {showAnalytics ? 'Hide Analytics' : 'Show Analytics Dashboard'}
       </button>
 
-      {/* PERF BUG: Always mounted, recharts always in bundle */}
-      {showAnalytics && <AnalyticsDashboard products={products} />}
+      <Suspense fallback={<div className="analytics-loader"><span className="spinner" />Loading analytics...</div>}>
+        {showAnalytics && <AnalyticsDashboard products={products} />}
+      </Suspense>
 
       <div className="results-header">
         <SearchBar value={searchTerm} onChange={handleSearch} resultCount={products.length} />

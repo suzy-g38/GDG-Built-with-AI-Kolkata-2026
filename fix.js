@@ -14,6 +14,17 @@ import path from 'path'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+// Load .env.local if present (Node doesn't auto-load env files)
+const envFile = path.join(__dirname, '.env.local')
+if (existsSync(envFile)) {
+  for (const line of readFileSync(envFile, 'utf8').split('\n')) {
+    const [key, ...rest] = line.split('=')
+    if (key && rest.length && !process.env[key.trim()]) {
+      process.env[key.trim()] = rest.join('=').trim()
+    }
+  }
+}
+
 const c = {
   reset:  '\x1b[0m', bold: '\x1b[1m', dim: '\x1b[2m',
   red:    '\x1b[31m', green: '\x1b[32m', yellow: '\x1b[33m',
