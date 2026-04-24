@@ -39,8 +39,11 @@ function ChromeAiPanel({ quality, source }: { quality: NetworkQuality; source: s
   const [log, setLog] = useState<string[]>([])
 
   useEffect(() => {
-    const win = window as typeof window & { ai?: { languageModel?: unknown } }
-    const hasAI = !!win.ai?.languageModel
+    const win = window as typeof window & {
+      ai?: { languageModel?: unknown; assistant?: unknown }
+      LanguageModel?: unknown
+    }
+    const hasAI = !!(win.ai?.languageModel ?? win.ai?.assistant ?? win.LanguageModel)
     setAvailable(hasAI)
 
     const lines = hasAI
@@ -84,11 +87,11 @@ function ChromeAiPanel({ quality, source }: { quality: NetworkQuality; source: s
       </div>
       {log.map((line, i) => (
         <div key={i} className="ai-log-line">
-          {/* {line.startsWith('>') ? <span className="prompt">{line}</span>
+          {!line ? <br /> : line.startsWith('>') ? <span className="prompt">{line}</span>
             : line.startsWith('  ✓') || line.startsWith('  ↳') ? <span className="response">{line}</span>
             : line.startsWith('  "') ? <span className="response">{line}</span>
             : line.startsWith('  Enable') || line.startsWith('  •') ? <span className="comment">{line}</span>
-            : <span>{line}</span>} */}
+            : <span>{line}</span>}
         </div>
       ))}
     </div>

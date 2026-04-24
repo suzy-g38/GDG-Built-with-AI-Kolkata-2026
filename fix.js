@@ -210,7 +210,7 @@ async function main() {
     return
   }
 
-  await spinner('Sending to Gemini 2.0 Flash...', 500)
+  await spinner('Sending to Gemini 3.1 Flash Lite...', 500)
   process.stdout.write(`\r  ${col('green', '✓')}  Request sent — streaming fix\n`)
 
   console.log('\n' + hr())
@@ -218,10 +218,16 @@ async function main() {
   console.log(hr() + '\n')
 
   const genAI = new GoogleGenerativeAI(apiKey)
+
   const model = genAI.getGenerativeModel({
-    model: 'gemini-2.0-flash',
-    generationConfig: { temperature: 0.1, maxOutputTokens: 2000 },
-  })
+  model: 'gemini-3.1-flash-lite-preview', 
+  generationConfig: { 
+    temperature: 0,        
+    topP: 0.1, 
+    maxOutputTokens: 5000, 
+    responseMimeType: "text/plain" 
+  },
+})
 
   let fullResponse = ''
   try {

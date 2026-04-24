@@ -1,6 +1,6 @@
 // PERF BUG: AnalyticsDashboard imported eagerly — recharts (182KB) in main bundle
 import { useState } from 'react'
-import { AnalyticsDashboard } from './AnalyticsDashboard'
+import  AnalyticsDashboard  from './AnalyticsDashboard'
 import { ProductCard } from './ProductCard'
 import { SearchBar } from './SearchBar'
 import { products } from '../data/products'

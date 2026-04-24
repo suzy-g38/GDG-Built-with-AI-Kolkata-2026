@@ -10,7 +10,7 @@ interface Props {
 
 const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6']
 
-export function AnalyticsDashboard({ products }: Props) {
+export default function AnalyticsDashboard({ products }: Props) {
   const totalRevenue = products.reduce((s, p) => s + p.price, 0)
   const avgRating = products.reduce((s, p) => s + p.rating, 0) / products.length
   const totalStock = products.reduce((s, p) => s + p.stock, 0)

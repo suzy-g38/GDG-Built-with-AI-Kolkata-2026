@@ -135,7 +135,7 @@ Be specific about file paths and line numbers. Be direct. No preamble, no conclu
 // ── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
   console.log('\n' + hr('─'))
-  console.log(`  ${bold(col('cyan', '⚡ GDG PERF ANALYSER'))}  ${dim('·')}  ${col('magenta', 'Powered by Gemini 2.0 Flash')}`)
+  console.log(`  ${bold(col('cyan', '⚡ GDG PERF ANALYSER'))}  ${dim('·')}  ${col('magenta', 'Powered by gemini-3-flash-preview')}`)
   console.log(hr('─') + '\n')
 
   // ── If --saved flag, just cat the backup output ──
@@ -159,7 +159,7 @@ async function main() {
   process.stdout.write(`\r  ${col('green', '✓')}  Bundle analysis loaded`)
   console.log(`  ${dim('Total JS: ~583 KB  ·  Largest chunk: recharts (182 KB)')}`)
 
-  await spinner('Sending to Gemini 2.0 Flash...', 600)
+  await spinner('Sending to Gemini 3.1 Flash Lite...', 600)
   process.stdout.write(`\r  ${col('green', '✓')}  Request sent — streaming response\n`)
 
   console.log('\n' + hr())
@@ -189,10 +189,16 @@ async function main() {
   }
 
   const genAI = new GoogleGenerativeAI(apiKey)
+
   const model = genAI.getGenerativeModel({
-    model: 'gemini-2.0-flash',
-    generationConfig: { temperature: 0.2, maxOutputTokens: 1200 },
-  })
+  model: 'gemini-3.1-flash-lite-preview', 
+  generationConfig: { 
+    temperature: 0,       
+    topP: 0.1, 
+    maxOutputTokens: 5000, 
+    responseMimeType: "text/plain" 
+  },
+})
 
   const prompt = buildPrompt(lh, bundle)
 
