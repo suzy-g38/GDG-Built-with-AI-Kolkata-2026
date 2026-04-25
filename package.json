@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "start":"npm start",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview --port 3000",
     "demo": "npm run build && npm run preview",
-    "analyse": "node analyse.js",
+    "analyse": "node --env-file=.env.local analyse.js",
     "reset": "node reset.js",
     "generate-images": "node scripts/generate-images.js",
     "optimize-images": "node optimize-images.js"

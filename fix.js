@@ -14,6 +14,18 @@ import path from 'path'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+// Load .env.local if present (Node doesn't auto-load env files)
+const envFile = path.join(__dirname, '.env.local')
+if (existsSync(envFile)) {
+  for (const line of readFileSync(envFile, 'utf8').split('\n')) {
+    const [key, ...rest] = line.split('=')
+    if (key && rest.length && !process.env[key.trim()]) {
+      process.env[key.trim()] = rest.join('=').trim()
+    }
+  }
+}
+
+
 const c = {
   reset:  '\x1b[0m', bold: '\x1b[1m', dim: '\x1b[2m',
   red:    '\x1b[31m', green: '\x1b[32m', yellow: '\x1b[33m',
@@ -50,7 +62,7 @@ ${code}
 
 Apply these exact fixes:
 1. Wrap the component export with React.memo: export const ProductCard = React.memo(function ProductCard...)
-2. The getPriceCategory function runs a 10,000-iteration loop. Move it outside the component body entirely (as a standalone function before the component) and wrap the call inside the component with useMemo: const priceInfo = useMemo(() => getPriceCategory(product.price), [product.price])
+2. The getPriceCategory function runs a 100,000-iteration loop. Move it outside the component body entirely (as a standalone function before the component) and wrap the call inside the component with useMemo: const priceInfo = useMemo(() => getPriceCategory(product.price), [product.price])
 3. Add import { useMemo } from 'react' (replace the existing react import).
 4. Add explicit width={280} height={280} attributes to the <img> tag to prevent CLS.
 5. Remove the inline cardStyle object. Use a CSS class or just remove it.
